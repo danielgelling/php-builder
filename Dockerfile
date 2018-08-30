@@ -5,8 +5,8 @@ RUN apt-get update && apt-get install -y \
   python-pip \
   git
 
-# USER jenkins
-WORKDIR /home/jenkins
+# USER builder
+WORKDIR /home/builder
 
 # Docker
 ENV DOCKER_VERSION 17.12.0
@@ -26,10 +26,6 @@ RUN curl -o ./jx-release-version -L https://github.com/jenkins-x/jx-release-vers
   mv jx-release-version /usr/bin/ && \
   chmod +x /usr/bin/jx-release-version
 
-#RUN curl -o ./jq -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && \
-#  chmod +x jq && \
-#  mv ./jq /usr/bin/jq
-
 # exposecontroller
 ENV EXPOSECONTROLLER_VERSION 2.3.34
 RUN curl -L https://github.com/fabric8io/exposecontroller/releases/download/v$EXPOSECONTROLLER_VERSION/exposecontroller-linux-amd64 > exposecontroller && \
@@ -38,18 +34,10 @@ RUN curl -L https://github.com/fabric8io/exposecontroller/releases/download/v$EX
 
 # skaffold
 ENV SKAFFOLD_VERSION 0.12.0
-# RUN curl -Lo skaffold https://github.com/GoogleCloudPlatform/skaffold/releases/download/v${SKAFFOLD_VERSION}/skaffold-linux-amd64 && \
-# TODO use temp fix distro
-
-RUN curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v0.12.0/skaffold-linux-amd64
 
 RUN curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v0.12.0/skaffold-linux-amd64 && \
   chmod +x skaffold && \
   mv skaffold /usr/bin
-
-#RUN curl -Lo skaffold https://github.com/jstrachan/skaffold/releases/download/v0.5.0.1-jx2/skaffold-linux-amd64 && \
-#chmod +x skaffold && \
-#  mv skaffold /usr/bin
 
 # draft
 RUN curl https://azuredraft.blob.core.windows.net/draft/draft-canary-linux-amd64.tar.gz  | tar xzv && \
@@ -60,11 +48,6 @@ RUN curl https://azuredraft.blob.core.windows.net/draft/draft-canary-linux-amd64
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && \
   chmod +x kubectl && \
   mv kubectl /usr/bin/
-
-# jx
-ENV JX_VERSION 1.3.171
-RUN curl -L https://github.com/jenkins-x/jx/releases/download/v${JX_VERSION}/jx-linux-amd64.tar.gz | tar xzv && \
-  mv jx /usr/bin/
 
 ENV PATH ${PATH}:/opt/google/chrome
 
